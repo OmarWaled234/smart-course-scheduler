@@ -37,6 +37,7 @@ class Task:
     due_date: date
     estimated_hours: float
     priority: str
+    completed_hours: float = 0
     completed: bool = False
     id: int | None = None
 

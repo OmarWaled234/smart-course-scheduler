@@ -5,6 +5,11 @@ A Python-based Smart Course Scheduler that helps students manage courses, assign
 
 Smart Course Scheduler is a Streamlit student productivity app that stores courses, tasks, and weekly study availability in SQLite. It generates a weekly study schedule by ranking unfinished work with deadline urgency, priority, and estimated workload.
 
+The project now also includes a mobile app path:
+
+- `api.py` exposes the scheduler through a FastAPI backend.
+- `mobile/` contains an Expo React Native app for iOS, Android, and web previews.
+
 Resume bullet:
 
 > Built a Python-based smart study planner that tracks academic deadlines and automatically generates weekly study schedules using urgency, priority, and workload-based scheduling logic.
@@ -14,6 +19,7 @@ Resume bullet:
 - Add, edit, delete, and view courses.
 - Add, edit, delete, and view academic tasks.
 - Track task type, due date, estimated hours, priority, and completion status.
+- Log partial study hours toward tasks and track remaining workload.
 - Add weekly study blocks with day, start time, and end time.
 - Automatically generate a weekly study schedule.
 - Split larger tasks across multiple study sessions.
@@ -29,19 +35,24 @@ Resume bullet:
 
 - Python
 - Streamlit
+- FastAPI
 - SQLite
 - Pandas
 - Matplotlib
+- React Native
+- Expo
 
 ## Project Structure
 
 ```text
 smart-course-scheduler/
 |-- app.py
+|-- api.py
 |-- database.py
 |-- scheduler.py
 |-- models.py
 |-- utils.py
+|-- mobile/
 |-- requirements.txt
 |-- README.md
 |-- LICENSE
@@ -70,6 +81,33 @@ streamlit run app.py
 ```
 
 The app creates a local SQLite database file named `smart_course_scheduler.db` when it starts.
+
+## Mobile App Setup
+
+Run the backend API from the project root:
+
+```powershell
+.\.venv\Scripts\Activate.ps1
+pip install -r requirements.txt
+uvicorn api:app --reload --host 0.0.0.0 --port 8000
+```
+
+In another terminal, start the Expo app:
+
+```powershell
+cd mobile
+npm install
+npm start
+```
+
+Open the app with Expo Go on your phone, an Android emulator, an iOS simulator, or the Expo web preview.
+
+The mobile app automatically tries to connect to the API on the same computer running Expo. If you need to override it, set:
+
+```powershell
+$env:EXPO_PUBLIC_API_BASE_URL="http://YOUR_COMPUTER_IP:8000"
+npm start
+```
 
 ## How the Scheduler Works
 

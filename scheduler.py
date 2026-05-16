@@ -66,13 +66,22 @@ def generate_schedule(
         return pd.DataFrame()
 
     active_tasks["score"] = active_tasks.apply(lambda row: task_score(row.to_dict(), reference_date), axis=1)
-    active_tasks["remaining_hours"] = active_tasks["estimated_hours"].astype(float)
+    if "completed_hours" not in active_tasks.columns:
+        active_tasks["completed_hours"] = 0
+    active_tasks["remaining_hours"] = (
+        active_tasks["estimated_hours"].astype(float) - active_tasks["completed_hours"].astype(float)
+    ).clip(lower=0)
+    active_tasks = active_tasks[active_tasks["remaining_hours"] > 0.05].copy()
+    if active_tasks.empty:
+        return pd.DataFrame()
     active_tasks = active_tasks.sort_values(
-        by=["score", "due_date", "estimated_hours"],
+        by=["score", "due_date", "remaining_hours"],
         ascending=[False, True, False],
     )
 
     blocks = study_blocks.copy()
+    if "completed" in blocks.columns:
+        blocks = blocks[blocks["completed"] == 0].copy()
     blocks["day_order"] = blocks["day_of_week"].map(DAY_ORDER)
     blocks["duration_hours"] = blocks.apply(
         lambda row: hours_between(row["start_time"], row["end_time"]),
