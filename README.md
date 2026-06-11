@@ -1,142 +1,63 @@
-# smart-course-scheduler
-A Python-based Smart Course Scheduler that helps students manage courses, assignments, exams, and deadlines in one place. The app uses priority, urgency, workload, and available study blocks to automatically generate a weekly study plan, making it easier to stay organized and focus on the right tasks at the right time.
+# Smart Course Scheduler
 
-## Overview
-
-Smart Course Scheduler is a Streamlit student productivity app that stores courses, tasks, and weekly study availability in SQLite. It generates a weekly study schedule by ranking unfinished work with deadline urgency, priority, and estimated workload.
-
-The project now also includes a mobile app path:
-
-- `api.py` exposes the scheduler through a FastAPI backend.
-- `mobile/` contains an Expo React Native app for iOS, Android, and web previews.
-
-Resume bullet:
-
-> Built a Python-based smart study planner that tracks academic deadlines and automatically generates weekly study schedules using urgency, priority, and workload-based scheduling logic.
-
-## Features
-
-- Add, edit, delete, and view courses.
-- Add, edit, delete, and view academic tasks.
-- Track task type, due date, estimated hours, priority, and completion status.
-- Log partial study hours toward tasks and track remaining workload.
-- Add weekly study blocks with day, start time, and end time.
-- Automatically generate a weekly study schedule.
-- Split larger tasks across multiple study sessions.
-- Exclude completed tasks from the generated schedule.
-- Flag overdue unfinished tasks.
-- Show a "What should I study today?" recommendation.
-- Dashboard metrics for total tasks, completed tasks, overdue tasks, upcoming tasks, and remaining study hours.
-- Charts for tasks by course, completed vs incomplete tasks, and hours remaining by course.
-- Export tasks and generated schedules to CSV.
-- Load sample/demo data for quick testing.
+An Expo + React Native iOS-friendly schedule-making app for students and workers. Users can register, log in, create schedules, and add colored class/work blocks to a weekly Sunday-Saturday calendar grid.
 
 ## Tech Stack
 
-- Python
-- Streamlit
-- FastAPI
-- SQLite
-- Pandas
-- Matplotlib
-- React Native
-- Expo
+- React Native with Expo
+- TypeScript
+- Expo Router
+- Supabase Auth
+- Supabase Postgres
+- AsyncStorage for simple local/offline caching
 
 ## Project Structure
 
 ```text
-smart-course-scheduler/
-|-- app.py
-|-- api.py
-|-- database.py
-|-- scheduler.py
-|-- models.py
-|-- utils.py
-|-- mobile/
-|-- requirements.txt
-|-- README.md
-|-- LICENSE
-`-- .gitignore
+app/
+  index.tsx
+  login.tsx
+  register.tsx
+  home.tsx
+  schedule/[id].tsx
+  create-schedule.tsx
+  create-block.tsx
+  edit-block/[id].tsx
+components/
+  CalendarGrid.tsx
+  ScheduleBlock.tsx
+  TimeColumn.tsx
+  DayColumn.tsx
+  ColorPicker.tsx
+  FormInput.tsx
+  PrimaryButton.tsx
+lib/
+  supabase.ts
+  storage.ts
+  timeUtils.ts
+types/
+  schedule.ts
+supabase/
+  schema.sql
 ```
 
-## Setup Instructions
+## Supabase Setup
 
-1. Create and activate a virtual environment:
+1. Create a Supabase project.
+2. Open the SQL editor and run `supabase/schema.sql`.
+3. In [lib/supabase.ts](./lib/supabase.ts), replace the placeholder URL and anon key with your project values.
+4. In Supabase Auth settings, configure email confirmation based on how you want registration to behave during development.
 
-```powershell
-python -m venv .venv
-.\.venv\Scripts\Activate.ps1
-```
+## Run Locally
 
-2. Install dependencies:
-
-```powershell
-pip install -r requirements.txt
-```
-
-3. Run the Streamlit app:
-
-```powershell
-streamlit run app.py
-```
-
-The app creates a local SQLite database file named `smart_course_scheduler.db` when it starts.
-
-## Mobile App Setup
-
-Run the backend API from the project root:
-
-```powershell
-.\.venv\Scripts\Activate.ps1
-pip install -r requirements.txt
-uvicorn api:app --reload --host 0.0.0.0 --port 8000
-```
-
-In another terminal, start the Expo app:
-
-```powershell
-cd mobile
+```bash
 npm install
-npm start
+npm run start
 ```
 
-Open the app with Expo Go on your phone, an Android emulator, an iOS simulator, or the Expo web preview.
+Then open the app with Expo Go or the iOS simulator.
 
-The mobile app automatically tries to connect to the API on the same computer running Expo. If you need to override it, set:
+## Notes
 
-```powershell
-$env:EXPO_PUBLIC_API_BASE_URL="http://YOUR_COMPUTER_IP:8000"
-npm start
-```
-
-## How the Scheduler Works
-
-The scheduler first removes completed tasks. It then gives each unfinished task a score based on priority and urgency:
-
-- High priority = 3
-- Medium priority = 2
-- Low priority = 1
-- Tasks due sooner receive a higher urgency score.
-- Overdue unfinished tasks are flagged and treated as highly urgent.
-
-Tasks are sorted by the combined score, then placed into weekly study blocks in order. If a task needs more time than one block or session, it is split across multiple sessions until its estimated hours are covered or available study time runs out.
-
-## Suggested Screenshots
-
-Add screenshots for these views after running the app:
-
-- Dashboard with metrics and charts.
-- Courses page with sample courses.
-- Tasks page showing open, complete, and overdue tasks.
-- Study Blocks page with weekly availability.
-- Weekly Schedule page with generated study sessions.
-- CSV export buttons.
-
-## Future Improvements
-
-- Add user accounts for multi-student use.
-- Add recurring study blocks.
-- Add calendar export with `.ics` files.
-- Add filters by course, priority, and due-date range.
-- Add notifications or email reminders.
-- Add smarter workload balancing across the week.
+- Calendar integration is intentionally not installed yet, but the screen boundaries make it straightforward to add `expo-calendar` later.
+- Offline support starts with AsyncStorage through [lib/storage.ts](./lib/storage.ts), keeping the screens insulated so SQLite can replace it later.

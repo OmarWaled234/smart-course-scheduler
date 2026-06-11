@@ -1,0 +1,18 @@
+{
+  "expo": {
+    "name": "Smart Course Scheduler",
+    "slug": "smart-course-scheduler",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "scheme": "smartcoursescheduler",
+    "userInterfaceStyle": "light",
+    "ios": {
+      "supportsTablet": true,
+      "bundleIdentifier": "com.example.smartcoursescheduler"
+    },
+    "android": {
+      "package": "com.example.smartcoursescheduler"
+    },
+    "plugins": ["expo-router"]
+  }
+}
